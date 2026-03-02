@@ -5,7 +5,7 @@ from pathlib import Path
 from skimage.measure import regionprops, label
 from skimage.io import imread
 
-test_path = Path("./hw/knn/task")
+test_path = Path("./knn_ocr/task")
 train_path = test_path / "train"
 
 
