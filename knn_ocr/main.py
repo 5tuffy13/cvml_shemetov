@@ -17,13 +17,11 @@ def extractor(image):
         gray = np.mean(image, 2).astype("u1")
         binary = gray > 0
     lb = label(binary)
-    props = regionprops(lb)
+    props = regionprops(lb.T)
     features = None
     for prop in props:
-        if prop.extent > 0.81:
-            props.remove(prop)
-    
-    features = [prop.eccentricity, prop.solidity, prop.extent, prop.perimeter/prop.area,prop.area_convex/prop.area]                                                                                                                               
+
+        features = [prop.eccentricity, prop.extent, prop.area_convex/prop.area, prop.axis_minor_length/prop.perimeter * 3, prop.perimeter * 10**-4 * 5]                                                                                                                               
     return np.array(features,  dtype = "f4")
 
 chararr = []
@@ -34,7 +32,7 @@ def make_train(path):
   ncls = -1
   for cls in sorted(path.glob("**")):
     ncls += 1
-    chararr.append(str(cls)[-1])
+    chararr.append(str(cls)[-1])    
     for p in sorted(cls.glob("*.png")):
       train.append(extractor(imread(p)))
       responses.append(ncls)
@@ -45,6 +43,7 @@ def make_train(path):
 
 
 for i in range(7):
+    print(f"{i}. ", end="")
     image = imread(test_path / f"{i}.png")
 
 
@@ -58,16 +57,32 @@ for i in range(7):
     lb = label(binary.T)
     props = regionprops(lb)
 
-    find = []
+    toDelete = []
+    for prop in props:
+        if prop.extent > 0.7 and prop.axis_minor_length/prop.perimeter > 0.2:
+            toDelete.append(prop)
 
-    for i, prop in enumerate(props):
-        if props[i].extent < 0.7:
-            find.append(extractor(props[i].image))
+    for item in toDelete:
+        props.remove(item)
+
+    find = []
+    spacearr = []
+    for j, prop in enumerate(props):
+        if prop != props[-1]:
+            if props[j+1].bbox[0] > props[j].bbox[2] + 20:
+                spacearr.append(j+1)
+        find.append(extractor(props[j].image))
+
     find = np.array(find, dtype = "f4").reshape(-1,5)
 
     ret, result, neighbours, dist = knn.findNearest(find,  3)
 
+    k = 0
     for res in result:
+        
+        if k in spacearr:
+            print(" ", end="")
         print(chararr[int(res.item())], end="")
+        k+=1
 
     print("\n")
