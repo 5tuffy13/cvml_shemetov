@@ -1,0 +1,11 @@
+torch
+tensorflow-macos
+opencv-python
+matplotlib
+numpy
+requests
+pandas
+scikit-learn
+seaborn
+datasets
+jupyter
