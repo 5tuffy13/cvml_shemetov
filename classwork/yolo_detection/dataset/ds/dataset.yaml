@@ -1,0 +1,7 @@
+names:
+  0: cube
+  1: sphere
+nc: 2
+path: /Users/alexander/study/cvml_shemetov/classwork/yolo_detection/dataset/ds
+train: /Users/alexander/study/cvml_shemetov/classwork/yolo_detection/dataset/ds/images/train
+val: /Users/alexander/study/cvml_shemetov/classwork/yolo_detection/dataset/ds/images/val

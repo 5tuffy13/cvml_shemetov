@@ -33,7 +33,7 @@ class Buffer():
 
 def build_model():
     weights = torchvision.models.AlexNet_Weights.IMAGENET1K_V1
-    model = torchvision.models.alexnet(weights)
+    model = torchvision.models.alexnet(weights=weights)
 
     for param in model.features.parameters():
         param.requires_grad = False
@@ -81,7 +81,7 @@ def predict(frame):
     tensor = transform(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
     tensor = tensor.unsqueeze(0).to("mps") # [[[]]]
     with torch.no_grad():
-        predicted = model(tensor).squeeze()
+        predicted = model(tensor).squeeze(1)
         prob = torch.sigmoid(predicted).item()
     label = "person" if prob > 0.5 else "no_person"
     return label, prob
@@ -96,7 +96,7 @@ cv2.namedWindow("Camera", cv2.WINDOW_GUI_NORMAL)
 buffer = Buffer()
 count_labeled = 0
 
-
+epoch = 0
 while True:
     _, frame = cap.read()
     cv2.imshow("Camera", frame)
@@ -127,6 +127,8 @@ while True:
 
     # print(len(buffer), count_labeled)
     if count_labeled >= buffer.frames.maxlen:
+        epoch+=1
+        print(f"Epoch: {epoch}")
         # print("Train") 
         loss = train(buffer)
         if loss:
