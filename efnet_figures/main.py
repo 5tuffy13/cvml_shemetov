@@ -113,7 +113,6 @@ def show_cm(y_true, y_pred, title):
     display.plot(cmap=plt.cm.Blues)
     plt.title(title)
     plt.show()
-
 show_cm(y_true, y_pred_b0, "EfficientNet B0")
 show_cm(y_true, y_pred_b1, "EfficientNet B1")
 show_cm(y_true, y_pred_b2, "EfficientNet B2")

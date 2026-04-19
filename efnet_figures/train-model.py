@@ -92,7 +92,7 @@ if __name__ == "__main__":
         return total_loss/total, correct/total
     best_acc = 0.0
 
-    for epoch in range(1,16):
+    for epoch in range(1,36):
         train_loss, train_acc = run(model, train_loader, criterion, optimizer)
 
         val_loss, val_acc = run(model, val_loader, criterion)
