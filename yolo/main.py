@@ -26,11 +26,12 @@ while True:
     if len(result.boxes.xyxy.cpu().numpy()) > 0:
         box = result.boxes.xyxy.cpu().numpy()[0] 
         cls = result.boxes.cls.cpu().numpy()[0]
-        scores = result.boxes.conf.cpu().numpy()
+        scores = result.boxes.conf.cpu().numpy()[0]
     
         x1, y1, x2, y2 = box.astype(int)
     if cls is not None:
         cv2.putText(frame, f"{model.names[cls]}", (x1+20,y1), 3, 3, (0,255,0))
+        cv2.putText(frame, f"{scores:.2f}", (x1+20,y1-60), 3, 3, (0,255,0))
         cv2.rectangle(frame, (x1, y1), (x2, y2), (0,230,0))
     cv2.imshow("class", frame)
     
